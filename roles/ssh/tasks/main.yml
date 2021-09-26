@@ -1,0 +1,31 @@
+- name: enforce env   
+  shell: source /etc/profile
+  run_once: true
+
+- name: close ssh check  #关闭初次访问提示询问   
+  shell: sed -i "s/^.*StrictHostKeyChecking.*$/   StrictHostKeyChecking no/g" /etc/ssh/ssh_config
+
+- name: delete /home/{{ ssh_user }}/.ssh/
+  file: 
+    path: /home/{{ ssh_user }}/.ssh/
+    state: absent
+
+- name: generating public/private rsa key pair  #生成公钥和私钥
+  shell: ssh-keygen -t rsa -b 2048 -N '' -f /home/{{ ssh_user }}/.ssh/id_rsa
+
+- name: view id_rsa.pub  #将公钥设置成变量
+  shell: cat /home/{{ ssh_user }}/.ssh/id_rsa.pub
+  register: sshinfo
+  - set_fact: 
+    sshpub: {{ sshinfo.stdout }}
+    
+- name: add ssh record #合并各个节点公钥
+  local_action: "shell echo {{ sshpub }} >> {{ play_book.dir }}/templates/authorized_keys.j2"
+    
+- name: copy authorized_keys.j2 to all #分发到各个节点上
+  template: 
+    src: {{ playbook_dir }}/templates/authorized_keys.j2 
+    dest: /root/.ssh/authorized_keys 
+    mode: 0600
+  tags:
+  - install ssh

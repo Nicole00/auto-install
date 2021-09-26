@@ -1,0 +1,6 @@
+---
+# deploy scala 2.12.11
+
+- hosts: scala
+  roles:
+   - install_scala

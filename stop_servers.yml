@@ -1,0 +1,14 @@
+---
+# stop hadoop and spark services
+
+- hosts: hadoop
+  roles:
+    - op_hadoop
+  vars:
+    - op: stop
+
+- hosts: spark
+  roles:
+    - op_spark
+  vars:
+    - op: stop

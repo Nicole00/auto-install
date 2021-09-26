@@ -1,0 +1,6 @@
+---
+# deploy hadoop 2.10
+
+- hosts: hadoop
+  roles:
+    - install_hadoop

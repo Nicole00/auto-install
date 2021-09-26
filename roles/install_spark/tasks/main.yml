@@ -1,0 +1,68 @@
+
+
+- name: copy and unzip spark
+  unarchive: 
+    src: "{{ playbook_dir }}/packages/spark-2.4.7-bin-hadoop2.7.tar"
+    dest: "{{ deploy_dir }}"
+
+
+- name: config slaves
+  template: 
+    src: "{{ playbook_dir }}/templates/spark/slaves.j2"
+    dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/slaves"
+
+- name: config spark-env
+  template: 
+    src: "{{ playbook_dir }}/templates/spark/spark-env.sh.j2"
+    dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/spark-env.sh"
+
+
+- name: config spark-defaults
+  template:
+      src: "{{ playbook_dir }}/templates/spark/spark-defaults.conf.j2"
+      dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/spark-defaults.conf"
+
+
+# 设置环境变量到bash_profile
+- name: set spark env to bash_profile
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
+    insertafter: "{{item.position}}" 
+    line: "{{item.value}}" 
+    state: present
+  with_items:
+    - {position: EOF, value: "export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/"}
+    - {position: EOF, value: "export PATH=$SPARK_HOME/bin:$PATH"}
+
+# 刷新环境变量
+- name: enforce env 
+  shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+   
+# 设置环境变量到bashrc
+- name: set spark env to bashrc
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+    insertafter: "{{item.position}}" 
+    line: "{{item.value}}" 
+    state: present
+  with_items:
+    - {position: EOF, value: "export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/"}
+    - {position: EOF, value: "export PATH=$SPARK_HOME/bin:$PATH"}
+
+# 刷新环境变量
+- name: enforce env  
+  shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+
+- name: change sbin file chmode
+  file: 
+    dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/sbin"
+    mode: 0755 
+    recurse: yes
+   
+- name: change bin file chmode
+  file: 
+    dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/bin"
+    mode: 0755 
+    recurse: yes
+
+

@@ -1,0 +1,83 @@
+
+# 创建安装目录
+- name: mkdir jdk directory
+  file: 
+    path: "{{ deploy_dir }}/java"
+    state: directory 
+    mode: 0755
+  tags: java
+
+# 解压安装
+- name: copy and unzip jdk
+  unarchive: 
+    src: "{{ playbook_dir }}/packages/jdk-8u271-linux-x64.tar.gz"
+    dest: "{{ deploy_dir }}/java/"
+  tags: java
+
+# 判断java是否已经存在
+- name: test jdk exist
+  shell: source /etc/profile && which java
+  register: result
+  ignore_errors: yes
+  tags: java
+
+# 设置环境变量 到bash_profile
+- name: set env to bash_profile
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
+    insertafter: "{{ item.position }}" 
+    line: "{{ item.value }}" 
+    state: present
+  with_items:
+    - position: EOF
+      value: "export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271"
+    - position: EOF
+      value: "export JRE_HOME=$JAVA_HOME/jre"
+    - position: EOF
+      value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
+    - position: EOF
+      value: "export PATH=$JAVA_HOME/bin:$PATH"
+  when: result.rc != 0
+  tags: java
+
+# 刷新环境变量
+- name: enforce env  
+  shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+  when: result.rc != 0
+  tags: java
+
+# 设置环境变量
+- name: set env to bash_rc
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+    insertafter: "{{ item.position }}" 
+    line: "{{ item.value }}" 
+    state: present
+  with_items:
+    - position: EOF
+      value: "export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271"
+    - position: EOF
+      value: "export JRE_HOME=$JAVA_HOME/jre"
+    - position: EOF
+      value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
+    - position: EOF
+      value: "export PATH=$JAVA_HOME/bin:$PATH"
+  when: result.rc != 0
+  tags: java
+
+# 刷新环境变量
+- name: enforce env  
+  shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+  when: result.rc != 0
+  tags: java
+
+
+# 修改执行权限
+- name: chmod bin
+  file: 
+    dest: "{{ deploy_dir }}/java/jdk1.8.0_271/bin"
+    mode: 0755 
+    recurse: yes
+  when: result.rc != 0
+  tags: java
+

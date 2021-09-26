@@ -1,0 +1,21 @@
+# deploy jdk 1.8
+- hosts: jdk
+  roles:
+    - install_jdk
+
+# deploy scala 2.12.11
+- hosts: scala
+  roles:
+   - install_scala
+
+# deploy hadoop 2.10
+- hosts: hadoop
+  roles:
+    - install_hadoop
+
+# deploy spark 2.4
+- hosts: spark
+  roles:
+    - install_spark
+  vars:
+    - module: spark
