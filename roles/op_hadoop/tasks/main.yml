@@ -11,5 +11,3 @@
   register: yarn_result
   when: 
     - ansible_hostname == groups['hadoop']|first
-
-
