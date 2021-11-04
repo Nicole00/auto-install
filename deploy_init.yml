@@ -1,0 +1,6 @@
+---
+# download server package
+
+- hosts: deploy
+  roles:
+    - init
