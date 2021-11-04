@@ -1,11 +1,11 @@
 - name: download jdk server jar-packages
-  shell: "cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/jdk-8u271-linux-x64.tar.gz"
+  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/jdk-8u271-linux-x64.tar.gz"
 
 - name: download scala server jar-packages
-  shell: "cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/scala-2.12.11.tgz"
+  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/scala-2.12.11.tgz"
 
 - name: download hadoop server jar-packages
-  shell: "cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/hadoop-2.10.0.tar.gz"
+  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/hadoop-2.10.0.tar.gz"
 
 - name: download spark server jar-packages
-  shell: "cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/spark-2.4.7-bin-hadoop2.7.tar"
+  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/spark-2.4.7-bin-hadoop2.7.tar"
