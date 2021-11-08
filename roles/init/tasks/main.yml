@@ -1,11 +1,30 @@
+- name: create packages directory
+  file: 
+    path: "{{ playbook_dir }}/packages"
+    state: directory
+    mode: 0775
+    recurse: yes
+
 - name: download jdk server jar-packages
-  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/jdk-8u271-linux-x64.tar.gz"
+  get_url:
+    url: https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/jdk-8u271-linux-x64.tar.gz
+    dest: "{{ playbook_dir }}/packages"
+    validate_certs: no
 
 - name: download scala server jar-packages
-  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/scala-2.12.11.tgz"
+  get_url:
+    url: https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/scala-2.12.11.tgz
+    dest: "{{ playbook_dir }}/packages"
+    validate_certs: no
 
 - name: download hadoop server jar-packages
-  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/hadoop-2.10.0.tar.gz"
+  get_url:
+    url: https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/hadoop-2.10.0.tar.gz
+    dest: "{{ playbook_dir }}/packages"
+    validate_certs: no
 
 - name: download spark server jar-packages
-  shell: "mkdir {{ playbook_dir }}/packages & cd {{ playbook_dir }} & wget https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/spark-2.4.7-bin-hadoop2.7.tar"
+  get_url:
+    url: https://oss-cdn.nebula-graph.com.cn/jar-packages/env_packages/spark-2.4.7-bin-hadoop2.7.tar
+    dest: "{{ playbook_dir }}/packages"
+    validate_certs: no

@@ -1,7 +1,3 @@
-# init download all software packages 
-- hosts: deploy
-  roles:
-    - init
 
 # deploy jdk 1.8
 - hosts: jdk

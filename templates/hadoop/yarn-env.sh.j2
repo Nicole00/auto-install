@@ -12,8 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271
+
+
+{% if lookup('env', 'JAVA_HOME')|length <=0 %}
+export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271
+{% else %}
 export JAVA_HOME={{ lookup('env', 'JAVA_HOME') }}
+{% endif %}
 
 # User for YARN daemons
 export HADOOP_YARN_USER=${HADOOP_YARN_USER:-yarn}

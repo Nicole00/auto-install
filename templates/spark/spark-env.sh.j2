@@ -71,8 +71,13 @@ export SPARK_MASTER_PORTHOST={{ groups['spark'][0]}}
 export SPARK_MASTER_PORT=7077
 export SPARK_MASTER_WEBUI_PORT=8088
 export SPARK_LOCAL_IP={{ hostvars[inventory_hostname].ansible_default_ipv4.address }}
-# export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271
+
+{% if lookup('env', 'JAVA_HOME')|length <=0 %}
+export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271
+{% else %}
 export JAVA_HOME={{ lookup('env', 'JAVA_HOME') }}
+{% endif %}
+
 export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0
 export HADOOP_CONF={{ deploy_dir }}/hadoop-2.10.0/etc/hadoop
 export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7

@@ -1,26 +1,35 @@
 
-
+# 解压 spark
 - name: copy and unzip spark
   unarchive: 
     src: "{{ playbook_dir }}/packages/spark-2.4.7-bin-hadoop2.7.tar"
     dest: "{{ deploy_dir }}"
 
 
+# 配置 slaves
 - name: config slaves
   template: 
     src: "{{ playbook_dir }}/templates/spark/slaves.j2"
     dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/slaves"
 
+# 配置 spark-env
 - name: config spark-env
   template: 
     src: "{{ playbook_dir }}/templates/spark/spark-env.sh.j2"
     dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/spark-env.sh"
 
 
+# 配置 spark-defaults
 - name: config spark-defaults
   template:
       src: "{{ playbook_dir }}/templates/spark/spark-defaults.conf.j2"
       dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/spark-defaults.conf"
+
+# 配置 log4j.properties
+- name: config log4j.properties
+  template:
+    src: "{{ playbook_dir }}/templates/spark/log4j.properties.j2"
+    dest: "{{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/conf/log4j.properties"
 
 
 # 设置环境变量到bash_profile

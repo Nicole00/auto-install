@@ -1,1 +1,13 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# IDE
+.idea/
+.eclipse/
+*.iml
+
+# mac
 .DS_Store

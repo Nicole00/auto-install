@@ -5,21 +5,18 @@
     path: "{{ deploy_dir }}/java"
     state: directory 
     mode: 0755
-  tags: java
 
 # 解压安装
 - name: copy and unzip jdk
   unarchive: 
     src: "{{ playbook_dir }}/packages/jdk-8u271-linux-x64.tar.gz"
     dest: "{{ deploy_dir }}/java/"
-  tags: java
 
 # 判断java是否已经存在
 - name: test jdk exist
-  shell: source /etc/profile && which java
+  shell: source /etc/profile && echo $JAVA_HOME
   register: result
   ignore_errors: yes
-  tags: java
 
 # 设置环境变量 到bash_profile
 - name: set env to bash_profile
@@ -37,14 +34,12 @@
       value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
     - position: EOF
       value: "export PATH=$JAVA_HOME/bin:$PATH"
-  when: result.rc != 0
-  tags: java
+  when: result.stdout==""
 
 # 刷新环境变量
 - name: enforce env  
   shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
-  when: result.rc != 0
-  tags: java
+  when: result.stdout==""
 
 # 设置环境变量
 - name: set env to bash_rc
@@ -62,14 +57,12 @@
       value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
     - position: EOF
       value: "export PATH=$JAVA_HOME/bin:$PATH"
-  when: result.rc != 0
-  tags: java
+  when: result.stdout == ""
 
 # 刷新环境变量
 - name: enforce env  
   shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
-  when: result.rc != 0
-  tags: java
+  when: result.stdout == ""
 
 
 # 修改执行权限
@@ -78,6 +71,5 @@
     dest: "{{ deploy_dir }}/java/jdk1.8.0_271/bin"
     mode: 0755 
     recurse: yes
-  when: result.rc != 0
-  tags: java
+  when: result.stdout == ""
 
