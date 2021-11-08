@@ -1,5 +1,5 @@
-# auto-install
-JDK, HADOOP, SCALA, SPARK  auto install tool
+# graphcompute-ansible
+图计算/Exchange 依赖环境部署工具
 
 # 环境依赖
 1. 每台机器的系统环境安装 tar 解压缩工具
