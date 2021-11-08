@@ -1,0 +1,7 @@
+
+# spark服务
+- name: "{{ op }} spark server"
+  shell: "sh {{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/sbin/{{ op }}-all.sh"
+  register: spark_result
+  when: 
+    - ansible_hostname == groups['spark']|first

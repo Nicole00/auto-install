@@ -1,0 +1,76 @@
+
+# 解压hadoop
+- name: unzip the hadoop package
+  unarchive:
+    src: "{{ playbook_dir }}/packages/hadoop-2.10.0.tar.gz"
+    dest: "{{ deploy_dir }}"
+
+# 配置 hadoop 配置文件
+- name: config hadoop core-site config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/core-site.xml.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/core-site.xml"
+
+- name: config hadoop hdfs-site config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/hdfs-site.xml.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/hdfs-site.xml"
+
+- name: config hadoop yarn-site config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/yarn-site.xml.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/yarn-site.xml"
+
+- name: config hadoop hadoop-env config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/hadoop-env.sh.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/hadoop-env.sh"
+
+- name: config hadoop yarn-env config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/yarn-env.sh.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/yarn-env.sh"
+
+- name: config hadoop slaves config
+  template:
+      src: "{{ playbook_dir }}/templates/hadoop/slaves.j2"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/slaves"
+
+# 设置环境变量 到bash_profile
+- name: set hadoop env to bash_profile
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
+    insertafter: "{{item.position}}" 
+    line: "{{item.value}}" 
+    state: present
+  with_items:
+    - {position: EOF, value: "export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0/"}
+    - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+
+# 刷新环境变量
+- name: enforce env to bashrc
+  shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+
+  # 设置环境变量 到 bashrc
+- name: set hadoop env  
+  lineinfile: 
+    dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+    insertafter: "{{item.position}}" 
+    line: "{{item.value}}" 
+    state: present
+  with_items:
+    - {position: EOF, value: "export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0/"}
+    - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+
+# 刷新环境变量
+- name: enforce env  
+  shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+
+# 格式化namenode
+- name: format hdfs namenode
+  shell: hadoop namenode -format
+
+
+
+
+

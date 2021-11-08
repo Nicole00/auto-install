@@ -1,0 +1,13 @@
+# hdfs服务
+- name: "{{ op }} hdfs server"
+  shell: "sh {{ deploy_dir }}/hadoop-2.10.0/sbin/{{ op }}-dfs.sh"
+  register: dfs_result
+  when: 
+    - ansible_hostname == groups['hadoop']|first
+
+#  yarn服务
+- name: "{{ op }} yarn server"
+  shell: "sh {{ deploy_dir }}/hadoop-2.10.0/sbin/{{ op }}-yarn.sh"
+  register: yarn_result
+  when: 
+    - ansible_hostname == groups['hadoop']|first

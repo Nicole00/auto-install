@@ -1,0 +1,14 @@
+---
+# start hadoop and spark services
+
+- hosts: hadoop
+  roles:
+    - op_hadoop
+  vars:
+    - op: start
+
+- hosts: spark
+  roles:
+    - op_spark
+  vars:
+    - op: start

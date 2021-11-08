@@ -1,0 +1,58 @@
+#创建安装目录
+- name: mkdir scala directory
+  file: 
+    path: "{{ deploy_dir }}"
+    state: directory 
+    mode: 0755
+
+#解压安装
+- name: copy and unzip scala
+  unarchive: 
+    src: "{{ playbook_dir }}/packages/scala-2.12.11.tgz"
+    dest: "{{ deploy_dir }}"
+
+#设置环境变量
+- name: set env
+  lineinfile:
+    dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
+    insertafter: "{{ item.position }}" 
+    line: "{{ item.value }}" 
+    state: present
+  with_items:
+    - position: EOF
+      value: "export SCALA_HOME={{ deploy_dir }}/scala-2.12.11"
+    - position: EOF 
+      value: "export PATH=$SCALA_HOME/bin:$PATH"
+
+#刷新环境变量
+- name: enforce env
+  shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+
+
+#设置环境变量到bashrc
+- name: set env to bashrc
+  lineinfile:
+    dest: "/home/{{ ansible_ssh_user }}/.bashrc"
+    insertafter: "{{ item.position }}" 
+    line: "{{ item.value }}" 
+    state: present
+  with_items:
+    - position: EOF
+      value: "export SCALA_HOME={{ deploy_dir }}/scala-2.12.11"
+    - position: EOF 
+      value: "export PATH=$SCALA_HOME/bin:$PATH"
+      
+#刷新环境变量
+- name: enforce env
+  shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+
+#修改执行权限
+- name: chmod bin
+  file: 
+    dest: "{{ deploy_dir }}/scala-2.12.11/bin"
+    mode: 0755 
+    recurse: yes
+
+
+
+  

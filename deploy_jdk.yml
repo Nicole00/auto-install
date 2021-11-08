@@ -1,0 +1,6 @@
+---
+# deploy jdk 1.8
+
+- hosts: jdk
+  roles:
+    - install_jdk
