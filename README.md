@@ -1,5 +1,5 @@
 # auto-install
-JDK,HADOOP,SCALA,SPARK  auto install tool
+JDK, HADOOP, SCALA, SPARK  auto install tool
 
 # 环境依赖
 1. 每台机器的系统环境安装 tar 解压缩工具
