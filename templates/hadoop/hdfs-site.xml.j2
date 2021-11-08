@@ -23,15 +23,15 @@
     </property>
     <property>
         <name>dfs.http-address</name>
-        <value>{{ groups[['hadoop'][0]] }}:50070</value>
+        <value>{{ groups['hadoop'][0] }}:50070</value>
     </property>
     <property>
         <name>dfs.namenode.secondary.http-address</name>
-        "{%- if groups['hadoop']|length < 2 -%}
+        {%- if groups['hadoop']|length < 2 -%}
         <value>{{ groups['hadoop'][0] }}:50090</value>
         {%- else -%}
         <value>{{ groups['hadoop'][1] }}:50090</value>
-        {%- endif -%}"
+        {%- endif -%}
     </property>
     <property>
        <name>dfs.datanode.data.dir</name>

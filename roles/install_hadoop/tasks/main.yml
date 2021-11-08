@@ -1,7 +1,9 @@
 
 # 解压hadoop
 - name: unzip the hadoop package
-  shell: "tar -zxvf {{ playbook_dir }}/packages/hadoop-2.10.0.tar.gz -C {{ deploy_dir }}"
+  unarchive:
+    src: "{{ playbook_dir }}/packages/hadoop-2.10.0.tar.gz"
+    dest: "{{ deploy_dir }}"
 
 # 配置 hadoop 配置文件
 - name: config hadoop core-site config
@@ -27,7 +29,7 @@
 - name: config hadoop yarn-env config
   template:
       src: "{{ playbook_dir }}/templates/hadoop/yarn-env.sh.j2"
-      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/yarn-env.xml"
+      dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/yarn-env.sh"
 
 - name: config hadoop slaves config
   template:
