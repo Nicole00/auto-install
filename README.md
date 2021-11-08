@@ -10,7 +10,7 @@ JDK, HADOOP, SCALA, SPARK  auto install tool
     若执行后提示`没有可用软件包 ansible`， 请按如下操作：
 	 ```
     sudo yum search ansible
-    sudo yum install centos-release-ansible-29.noarch
+    sudo yum install centos-release-ansible-29.noarch (选择上一步执行结果中显示的可用包)
     sudo yum install ansible
      ```
 
