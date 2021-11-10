@@ -33,7 +33,7 @@
 
 
 # 设置环境变量到bash_profile
-- name: set spark env to bash_profile
+- name: set spark env to bash_profile for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
     insertafter: "{{item.position}}" 
@@ -42,13 +42,15 @@
   with_items:
     - {position: EOF, value: "export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/"}
     - {position: EOF, value: "export PATH=$SPARK_HOME/bin:$PATH"}
+  when: ansible_ssh_user != "root"
 
 # 刷新环境变量
-- name: enforce env 
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+  when: ansible_ssh_user != "root"
    
 # 设置环境变量到bashrc
-- name: set spark env to bashrc
+- name: set spark env to bashrc for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bashrc"
     insertafter: "{{item.position}}" 
@@ -57,10 +59,29 @@
   with_items:
     - {position: EOF, value: "export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/"}
     - {position: EOF, value: "export PATH=$SPARK_HOME/bin:$PATH"}
+  when: ansible_ssh_user != "root"
 
 # 刷新环境变量
-- name: enforce env  
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+  when: ansible_ssh_user != "root"
+
+# 设置环境变量到 /etc/profile
+- name: set spark env to /etc/profile for root user
+  lineinfile:
+    dest: "/etc/profile"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+    - {position: EOF, value: "export SPARK_HOME={{ deploy_dir }}/spark-2.4.7-bin-hadoop2.7/"}
+    - {position: EOF, value: "export PATH=$SPARK_HOME/bin:$PATH"}
+  when: ansible_ssh_user == "root"
+
+# 刷新环境变量
+- name: enforce env for root user
+  shell: "source /etc/profile"
+  when: ansible_ssh_user == "root"
 
 - name: change sbin file chmode
   file: 

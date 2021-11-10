@@ -99,3 +99,5 @@ ansible-playbook -i inventory.ini start_servers.yml
 
 > 如果想单独执行某一服务的安装，可以分别执行对应的脚本。 如单独安装scala，则执行
 > ansible-playbook -i inventory.ini deploy_scala.yml
+
+全部执行结束后，请手动 source 环境变量文件，使其在当前shell会话中生效。

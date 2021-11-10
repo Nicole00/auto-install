@@ -19,7 +19,7 @@
   ignore_errors: yes
 
 # 设置环境变量 到bash_profile
-- name: set env to bash_profile
+- name: set env to bash_profile for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
     insertafter: "{{ item.position }}" 
@@ -34,15 +34,15 @@
       value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
     - position: EOF
       value: "export PATH=$JAVA_HOME/bin:$PATH"
-  when: result.stdout==""
+  when: result.stdout=="" and ansible_ssh_user != "root"
 
 # 刷新环境变量
-- name: enforce env  
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
-  when: result.stdout==""
+  when: result.stdout=="" and ansible_ssh_user !="root"
 
 # 设置环境变量
-- name: set env to bash_rc
+- name: set env to bash_rc for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bashrc"
     insertafter: "{{ item.position }}" 
@@ -57,12 +57,35 @@
       value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
     - position: EOF
       value: "export PATH=$JAVA_HOME/bin:$PATH"
-  when: result.stdout == ""
+  when: result.stdout == "" and ansible_ssh_user !="root"
 
 # 刷新环境变量
-- name: enforce env  
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
-  when: result.stdout == ""
+  when: result.stdout == "" and ansible_ssh_user !="root"
+
+# 为root设置环境变量
+- name: set env to /etc/profile for root user
+  lineinfile:
+    dest: "/etc/profile"
+    insertafter: "{{ item.position }}"
+    line: "{{ item.value }}"
+    state: present
+  with_items:
+    - position: EOF
+      value: "export JAVA_HOME={{ deploy_dir }}/java/jdk1.8.0_271"
+    - position: EOF
+      value: "export JRE_HOME=$JAVA_HOME/jre"
+    - position: EOF
+      value: "export CLASSPATH=$JAVA_HOME/lib:$JRE_HOME/lib:./"
+    - position: EOF
+      value: "export PATH=$JAVA_HOME/bin:$PATH"
+  when: result.stdout == "" and ansible_ssh_user =="root"
+
+# 刷新环境变量
+- name: enforce env for root user
+  shell: "source /etc/profile"
+  when: result.stdout == "" and ansible_ssh_user == "root"
 
 
 # 修改执行权限
