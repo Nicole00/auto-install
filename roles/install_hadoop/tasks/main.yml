@@ -37,7 +37,7 @@
       dest: "{{ deploy_dir }}/hadoop-2.10.0/etc/hadoop/slaves"
 
 # 设置环境变量 到bash_profile
-- name: set hadoop env to bash_profile
+- name: set hadoop env to bash_profile  for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
     insertafter: "{{item.position}}" 
@@ -46,13 +46,15 @@
   with_items:
     - {position: EOF, value: "export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0/"}
     - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+  when: ansible_ssh_user != "root"
 
 # 刷新环境变量
-- name: enforce env to bashrc
+- name: enforce env to bashrc for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+  when: ansible_ssh_user != "root"
 
   # 设置环境变量 到 bashrc
-- name: set hadoop env  
+- name: set hadoop env to bashrc for no root user
   lineinfile: 
     dest: "/home/{{ ansible_ssh_user }}/.bashrc"
     insertafter: "{{item.position}}" 
@@ -61,14 +63,37 @@
   with_items:
     - {position: EOF, value: "export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0/"}
     - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+  when: ansible_ssh_user != "root"
 
 # 刷新环境变量
-- name: enforce env  
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+  when: ansible_ssh_user != "root"
 
-# 格式化namenode
+
+  # 设置环境变量 到 /etc/profile
+- name: set hadoop env to /etc/profile for root user
+  lineinfile:
+    dest: "/etc/profile"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+    - {position: EOF, value: "export HADOOP_HOME={{ deploy_dir }}/hadoop-2.10.0/"}
+    - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+  when: ansible_ssh_user == "root"
+
+# 刷新环境变量
+- name: enforce env for root user
+  shell: "source /etc/profile"
+  when: ansible_ssh_user == "root"
+
+
+# 格式化 namenode
 - name: format hdfs namenode
-  shell: hadoop namenode -format
+  shell: "{{ deploy_dir }}/hadoop-2.10.0/bin/hadoop namenode -format"
+  when:
+    - ansible_hostname == groups['hadoop']|first
 
 
 
