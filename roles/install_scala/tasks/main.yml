@@ -12,7 +12,7 @@
     dest: "{{ deploy_dir }}"
 
 #设置环境变量
-- name: set env
+- name: set env to bash_profile for no root user
   lineinfile:
     dest: "/home/{{ ansible_ssh_user }}/.bash_profile"
     insertafter: "{{ item.position }}" 
@@ -23,14 +23,16 @@
       value: "export SCALA_HOME={{ deploy_dir }}/scala-2.12.11"
     - position: EOF 
       value: "export PATH=$SCALA_HOME/bin:$PATH"
+  when: ansible_ssh_user != "root"
 
 #刷新环境变量
-- name: enforce env
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bash_profile"
+  when: ansible_ssh_user != "root"
 
 
 #设置环境变量到bashrc
-- name: set env to bashrc
+- name: set env to bashrc for no root user
   lineinfile:
     dest: "/home/{{ ansible_ssh_user }}/.bashrc"
     insertafter: "{{ item.position }}" 
@@ -41,10 +43,31 @@
       value: "export SCALA_HOME={{ deploy_dir }}/scala-2.12.11"
     - position: EOF 
       value: "export PATH=$SCALA_HOME/bin:$PATH"
+  when: ansible_ssh_user != "root"
       
 #刷新环境变量
-- name: enforce env
+- name: enforce env for no root user
   shell: "source /home/{{ ansible_ssh_user }}/.bashrc"
+  when: ansible_ssh_user != "root"
+
+#设置环境变量到 /etc/profile
+- name: set env to profile for root user
+  lineinfile:
+    dest: "/etc/profile"
+    insertafter: "{{ item.position }}"
+    line: "{{ item.value }}"
+    state: present
+  with_items:
+    - position: EOF
+      value: "export SCALA_HOME={{ deploy_dir }}/scala-2.12.11"
+    - position: EOF
+      value: "export PATH=$SCALA_HOME/bin:$PATH"
+  when: ansible_ssh_user == "root"
+
+#刷新环境变量
+- name: enforce env for root user
+  shell: "source /etc/profile"
+  when: ansible_ssh_user == "root"
 
 #修改执行权限
 - name: chmod bin
@@ -55,4 +78,3 @@
 
 
 
-  
