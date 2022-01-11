@@ -1,5 +1,5 @@
-# auto-install
-JDK, HADOOP, SCALA, SPARK  auto install tool
+# graphcompute-ansible
+图计算/Exchange 依赖环境部署工具
 
 # 环境依赖
 1. 每台机器的系统环境安装 tar 解压缩工具
@@ -10,7 +10,7 @@ JDK, HADOOP, SCALA, SPARK  auto install tool
     若执行后提示`没有可用软件包 ansible`， 请按如下操作：
 	 ```
     sudo yum search ansible
-    sudo yum install centos-release-ansible-29.noarch
+    sudo yum install centos-release-ansible-29.noarch (选择上一步执行结果中显示的可用包)
     sudo yum install ansible
      ```
 
@@ -99,3 +99,5 @@ ansible-playbook -i inventory.ini start_servers.yml
 
 > 如果想单独执行某一服务的安装，可以分别执行对应的脚本。 如单独安装scala，则执行
 > ansible-playbook -i inventory.ini deploy_scala.yml
+
+全部执行结束后，请手动 source 环境变量文件，使其在当前shell会话中生效。
