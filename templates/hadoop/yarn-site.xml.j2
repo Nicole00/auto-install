@@ -54,7 +54,7 @@
  </property>
  <property>
    <name>yarn.scheduler.minimum-allocation-mb</name>
-   <value>1024</value>
+   <value>512</value>
    <discription>shao</discription>
  </property>
  <property>
@@ -71,11 +71,23 @@
  </property>
  <property>
    <name>yarn.scheduler.maximum-allocation-vcores</name>
-   <value>32</value>
+   <value>900</value>
  </property>
  <property>
    <name>yarn.log-aggregation-enable</name>
    <value>true</value>
+ </property>
+ <property>
+   <name>yarn.log.server.url</name>
+   <value>http://vesoft-15-2:19888/jobhistory/logs</value>
+ </property>
+<property>
+   <name>yarn.log-aggregation.retain-seconds</name>
+   <value>604800</value>
+ </property>
+ <property>
+    <name>yarn.nodemanager.delete.debug-delay-sec</name>
+    <value>10800</value>
  </property>
  
 </configuration>
